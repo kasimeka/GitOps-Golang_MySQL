@@ -1,0 +1,42 @@
+version: "3"
+
+services:
+  server:
+    build:
+      context: .
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASS: ${MYSQL_PASS}
+      MYSQL_PORT: ${MYSQL_PORT}
+    networks:
+      - backend
+    depends_on:
+      - database
+    links:
+      - "database:${MYSQL_HOST}"
+
+  database:
+    image: mysql:8.0
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: internship # hardcoded here since it's hardcoded in the server's code
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASS}
+      MYSQL_TCP_PORT: ${MYSQL_PORT}
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+
+
+volumes:
+  mysql-data:
