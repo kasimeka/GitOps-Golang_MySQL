@@ -4,7 +4,6 @@ pipeline {
     stages {
         stage('build') {
             steps {
-                sh 'exit 1'
                 script {
                     tag = env.GIT_COMMIT.substring(0, 7) + '-' + env.BUILD_NUMBER
                 }
