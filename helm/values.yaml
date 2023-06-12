@@ -46,7 +46,7 @@ mysql:
 
 service:
   port: 9090
-  initialLivenessDelay: 30
+  initialLivenessDelay: 35
   initialReadinessDelay: 5
 
 ingress:
