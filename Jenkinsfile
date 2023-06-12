@@ -14,10 +14,22 @@ pipeline {
                     }
 
                     sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                    sh "docker build -t janw4ld/go_mysql-instabug:${tag} ."
-                    sh "docker push janw4ld/go_mysql-instabug:${tag}"
+                    sh "docker build -t janw4ld/go-serve:${tag} ."
+                    sh "docker push janw4ld/go-serve:${tag}"
                 }
             }
+        }
+    }
+
+    post {
+        failure {
+            slackSend(
+                botUser: true,
+                tokenCredentialId: 'slack-oauth-bot',
+                channel: '#ana-w-go',
+                color: '#ff0000',
+                message: 'Build failed :('
+            )
         }
     }
 }
