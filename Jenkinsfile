@@ -28,7 +28,7 @@ pipeline {
                 tokenCredentialId: 'slack-oauth-bot',
                 channel: '#ana-w-jenkins',
                 color: '#ff0000',
-                message: 'Build failed :('
+                message: "${env.GIT_COMMIT}: Build failed :("
             )
         }
     }
