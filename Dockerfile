@@ -1,5 +1,5 @@
 FROM golang:1.20-alpine3.18 AS builder
-COPY go.mod go.sum *.go /src/
+COPY /src/* /src/
 WORKDIR /src
 RUN CGO_ENABLED=0 GOOS=linux go build -o internship-2023
 
