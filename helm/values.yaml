@@ -6,7 +6,7 @@
 # but it's not supported by helm (yet)
 # https://github.com/helm/helm/pull/6876#pullrequestreview-482774751
 dbSecretName: &dbSecretName db-secret
-dbUser: &dbUser go-serve
+dbUser: &dbUser go-server
 dbPort: &dbPort 34728
 dbPrimaryPVC: &dbPrimaryPVC db-primary-pvc
 dbSecondaryPVC: &dbSecondaryPVC db-secondary-pvc

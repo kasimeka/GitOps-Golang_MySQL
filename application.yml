@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/janw4ld/trash.git
+    repoURL: https://github.com/janw4ld/go-serve.git
     targetRevision: HEAD
     path: helm
 
