@@ -34,7 +34,7 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		var ret []row
+		var ret []map[string]interface{}
 		for rs.Next() {
 			cur := row{}
 			err = rs.Scan(
@@ -48,7 +48,10 @@ func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			ret = append(ret, cur)
+			ret = append(ret, map[string]interface{}{
+				"id":        cur.id,
+				"createdAt": cur.createdAt,
+			})
 		}
 
 		bs, err := json.Marshal(ret)
