@@ -45,7 +45,9 @@ mysql:
     enabled: true
 
 service:
-  port: "9090"
+  port: 9090
+  initialLivenessDelay: 60
+  initialReadinessDelay: 60
 
 ingress:
   enabled: true
