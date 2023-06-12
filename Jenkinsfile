@@ -28,8 +28,8 @@ pipeline {
                 tokenCredentialId: 'slack-oauth-bot',
                 channel: '#ana-w-jenkins',
                 color: '#ff0000',
-                message: "job:${env.JOB_NAME}failed :("
-                         "\n  @branch:${env.GIT_BRANCH}"
+                message: "job:${env.JOB_NAME}failed :(" +
+                         "\n  @branch:${env.GIT_BRANCH}" +
                          "\n  @commit:${env.GIT_COMMIT}"
             )
         }
