@@ -4,6 +4,7 @@ pipeline {
     stages {
         stage('build') {
             steps {
+                sh 'exit 1'
                 script {
                     tag = env.GIT_COMMIT.substring(0, 7) + '-' + env.BUILD_NUMBER
                 }
@@ -25,7 +26,7 @@ pipeline {
             slackSend(
                 botUser: true,
                 tokenCredentialId: 'slack-oauth-bot',
-                channel: '#ana-w-go',
+                channel: '#ana-w-jenkins',
                 color: '#ff0000',
                 message: 'Build failed :('
             )
