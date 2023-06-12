@@ -3,6 +3,10 @@ kind: PersistentVolume
 metadata:
   name: db-primary-pv
 spec:
+  storageClassName: ""
+  claimRef:
+    name: db-primary-pvc
+    namespace: {{ .Release.Namespace }}
   capacity:
     storage: 1Gi
   accessModes:
@@ -15,8 +19,12 @@ kind: PersistentVolume
 metadata:
   name: db-secondary-pv
 spec:
+  storageClassName: ""
+  claimRef:
+    name: db-secondary-pvc
+    namespace: {{ .Release.Namespace }}
   capacity:
-    storage: 500Mi
+    storage: 2Gi
   accessModes:
     - ReadWriteMany
   hostPath:

@@ -3,6 +3,8 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.dbPrimaryPVC }}
 spec:
+  storageClassName: ""
+  volumeName: db-primary-pv
   accessModes:
     - ReadWriteMany
   resources:
@@ -14,8 +16,10 @@ kind: PersistentVolumeClaim
 metadata:
   name: {{ .Values.dbSecondaryPVC }}
 spec:
+  storageClassName: ""
+  volumeName: db-secondary-pv
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 400Mi
+      storage: 1.5Gi
