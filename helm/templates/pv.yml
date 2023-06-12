@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-primary-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /pv/db
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: db-secondary-pv
+spec:
+  capacity:
+    storage: 500Mi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: /pv/db-2
