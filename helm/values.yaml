@@ -46,12 +46,14 @@ mysql:
 
 service:
   port: 9090
-  initialLivenessDelay: 60
-  initialReadinessDelay: 60
+  initialLivenessDelay: 30
+  initialReadinessDelay: 5
 
 ingress:
   enabled: true
   className: haproxy
+  annotations:
+    kubernetes.io/ingress.class: haproxy
   hosts:
     - host: go-serve.local
       paths:
