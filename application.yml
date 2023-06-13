@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/janw4ld/go-serve.git
     targetRevision: HEAD
-    path: helm
+    path: chart
 
     helm:
       values: |
