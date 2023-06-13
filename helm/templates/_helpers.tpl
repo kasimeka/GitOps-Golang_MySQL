@@ -7,7 +7,13 @@
 {{- end -}}
 
 {{- define "db.hostname" -}}
-{{ default .Release.Name .Values.nameOverride | trunc 31 | trimSuffix "-" }}"-"{{ default "mysql" .Values.mysql.nameOverride | trunc 31 | trimSuffix "-" }}-primary
+{{- default .Release.Name .Values.nameOverride | trunc 31 | trimSuffix "-" }}
+{{- if .Values.mysql.nameOverride -}}
+{{- (printf "%s%s" "-" .Values.mysql.nameOverride) }}
+{{- else -}}
+""
+{{- end -}}
+-primary
 {{- end }}
 
 {{/*

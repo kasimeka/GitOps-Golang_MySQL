@@ -29,5 +29,5 @@ spec:
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: /pv/{{ .Release.Name }}-primary
+    path: /pv/{{ .Release.Name }}-secondary
 {{- end }}

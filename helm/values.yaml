@@ -48,10 +48,10 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: haproxy
   hosts:
-    - host: go-serve.local
-      paths:
-        - path: /api
-          pathType: Exact
+  - host: go-serve.local
+    paths:
+    - path: /api
+      pathType: Exact
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
@@ -75,6 +75,7 @@ autoscaling:
 mysql:
   global:
     storageClass: *storageClass
+  nameOverride: db
   architecture: replication
   auth:
     database: internship # hardcoded here since it's hardcoded in the server code
@@ -104,18 +105,16 @@ serviceAccount:
 
 podAnnotations: {}
 
-podSecurityContext:
-  {}
-  # fsGroup: 2000
+podSecurityContext: {}
+# fsGroup: 2000
 
-securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext: {}
+# capabilities:
+#   drop:
+#   - ALL
+# readOnlyRootFilesystem: true
+# runAsNonRoot: true
+# runAsUser: 1000
 
 nodeSelector: {}
 
