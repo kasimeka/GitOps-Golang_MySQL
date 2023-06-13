@@ -1,3 +1,11 @@
+{{- define "global.storageClass" -}}
+{{- if .Values.dbLocalVolumes.create -}}
+""
+{{- else -}}
+{{ .Values.global.storageClass }}
+{{- end }}
+{{- end -}}
+
 {{- define "db.hostname" -}}
 {{- default .Release.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}-db-primary
 {{- end }}

@@ -1,25 +1,25 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.dbPrimaryPVC }}
+  name: {{ .Values.dbPrimaryPVCName }}
 spec:
-  storageClassName: ""
-  volumeName: db-primary-pv
+  storageClassName: {{ include "global.storageClass" . }}
+  volumeName: {{ .Release.Name }}-primary
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 600Mi
+      storage: {{ .Values.dbLocalVolumes.primaryVolSize }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ .Values.dbSecondaryPVC }}
+  name: {{ .Values.dbSecondaryPVCName }}
 spec:
-  storageClassName: ""
-  volumeName: db-secondary-pv
+  storageClassName: {{ include "global.storageClass" . }}
+  volumeName: {{ .Release.Name }}-secondary
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 1.5Gi
+      storage: {{ .Values.dbLocalVolumes.secondaryVolSize }}

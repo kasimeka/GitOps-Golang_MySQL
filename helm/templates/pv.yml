@@ -1,31 +1,33 @@
+{{- if and (eq .Values.mysql.architecture "replication") .Values.dbLocalVolumes.create }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: db-primary-pv
+  name: {{ .Release.Name }}-primary
 spec:
   storageClassName: ""
   claimRef:
-    name: db-primary-pvc
+    name: {{ .Values.dbPrimaryPVCName }}
     namespace: {{ .Release.Namespace }}
   capacity:
-    storage: 1Gi
+    storage: {{ .Values.dbLocalVolumes.primaryVolSize }}
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: /pv/db
+    path: /pv/{{ .Release.Name }}-primary
 ---
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: db-secondary-pv
+  name: {{ .Release.Name }}-secondary
 spec:
   storageClassName: ""
   claimRef:
-    name: db-secondary-pvc
+    name: {{ .Values.dbSecondaryPVCName }}
     namespace: {{ .Release.Namespace }}
   capacity:
-    storage: 2Gi
+    storage: {{ .Values.dbLocalVolumes.secondaryVolSize }}
   accessModes:
     - ReadWriteMany
   hostPath:
-    path: /pv/db-2
+    path: /pv/{{ .Release.Name }}-primary
+{{- end }}

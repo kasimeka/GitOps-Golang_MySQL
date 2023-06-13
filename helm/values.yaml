@@ -2,52 +2,45 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# db and backend common env is better configured with subchart value templating
-# but it's not supported by helm (yet)
-# https://github.com/helm/helm/pull/6876#pullrequestreview-482774751
-dbSecretName: &dbSecretName db-secret
-dbUser: &dbUser go-server
-dbPort: &dbPort 34728
-dbPrimaryPVC: &dbPrimaryPVC db-primary-pvc
-dbSecondaryPVC: &dbSecondaryPVC db-secondary-pvc
-
-sealed:
-  # sealed values inserted here must be either created for 'default' namespace or
-  # with cluster-wide scope. Otherwise, the cluster will fail to decrypt them.
-  MYSQL_PASS:
-  MYSQL_ROOT_PASSWORD:
-  MYSQL_REPLICATION_PASSWORD:
-
 image:
   repository: janw4ld/go-serve
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
-mysql:
-  nameOverride: db
-  architecture: replication
-  auth:
-    database: internship # hardcoded here since it's hardcoded in the server's code
-    username: *dbUser
-    existingSecret: *dbSecretName
-  primary:
-    service:
-      ports:
-        mysql: *dbPort
-    persistence:
-      existingClaim: *dbPrimaryPVC
-  secondary:
-    replicaCount: 2
-    persistence:
-      existingClaim: *dbSecondaryPVC
-  volumePermissions:
-    enabled: true
-
 service:
   port: 9090
   initialLivenessDelay: 35
   initialReadinessDelay: 5
+
+# db and backend common variables are better configured with subchart value
+# templating but it's not supported by helm (yet)
+# https://github.com/helm/helm/pull/6876#pullrequestreview-482774751
+global:
+  # this value is ignored when dbLocalVolumes.create=true
+  storageClass: &storageClass ""
+
+dbSecretName: &dbSecretName db-secret
+dbUser: &dbUser go-server
+dbPort: &dbPort 34728
+
+dbPrimaryPVCName: &dbPrimaryPVC db-primary-pvc
+dbSecondaryPVCName: &dbSecondaryPVC db-secondary-pvc
+
+sealed:
+  # sealed values must be either created for the same release namespace or with 
+  # cluster-wide scope. otherwise, the cluster will fail to decrypt them.
+  MYSQL_PASS:
+  MYSQL_ROOT_PASSWORD:
+  MYSQL_REPLICATION_PASSWORD:
+
+# create hostPath volumes for db deployment
+# SHOULDN'T BE USED IN REAL DEPLOYMENTS; using a storage controller like
+# Portworx Volume is a better solution for on-cluster storage
+dbLocalVolumes:
+  create: true
+  primaryVolSize: 1Gi
+  secondaryVolSize: 2Gi
 
 ingress:
   enabled: true
@@ -66,18 +59,40 @@ ingress:
 
 resources:
   limits:
-    cpu: 500m
+    cpu: 700m
     memory: 1Gi
   requests:
-    cpu: 500m
+    cpu: 700m
     memory: 1Gi
 
 autoscaling:
   enabled: true
-  minReplicas: 2
-  maxReplicas: 4
-  targetCPUUtilizationPercentage: 80
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
   # targetMemoryUtilizationPercentage: 80
+
+mysql:
+  global:
+    storageClass: *storageClass
+  nameOverride: db
+  architecture: replication
+  auth:
+    database: internship # hardcoded here since it's hardcoded in the server code
+    username: *dbUser
+    existingSecret: *dbSecretName
+  primary:
+    service:
+      ports:
+        mysql: *dbPort
+    persistence:
+      existingClaim: *dbPrimaryPVC
+  secondary:
+    replicaCount: 2
+    persistence:
+      existingClaim: *dbSecondaryPVC
+  volumePermissions:
+    enabled: true
 
 serviceAccount:
   # Specifies whether a service account should be created
