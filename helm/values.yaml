@@ -40,7 +40,7 @@ sealed:
 dbLocalVolumes:
   create: true
   primaryVolSize: 1Gi
-  secondaryVolSize: 2Gi
+  secondaryVolSize: 1.5Gi
 
 ingress:
   enabled: true
