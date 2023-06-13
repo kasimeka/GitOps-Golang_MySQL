@@ -39,8 +39,8 @@ sealed:
 # Portworx Volume is a better solution for on-cluster storage
 dbLocalVolumes:
   create: true
-  primaryVolSize: 1Gi
-  secondaryVolSize: 1.5Gi
+  primaryVolSize: 600Mi
+  secondaryVolSize: 1Gi
 
 ingress:
   enabled: true
@@ -75,7 +75,6 @@ autoscaling:
 mysql:
   global:
     storageClass: *storageClass
-  nameOverride: db
   architecture: replication
   auth:
     database: internship # hardcoded here since it's hardcoded in the server code
