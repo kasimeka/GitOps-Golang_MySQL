@@ -1,0 +1,3 @@
+.env
+**/charts/*.tgz
+.trash
