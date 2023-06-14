@@ -28,7 +28,7 @@ dbPrimaryPVCName: &dbPrimaryPVC db-primary-pvc
 dbSecondaryPVCName: &dbSecondaryPVC db-secondary-pvc
 
 sealed:
-  # sealed values must be either created for the same release namespace or with 
+  # sealed values must be either created for the same release namespace or with
   # cluster-wide scope. otherwise, the cluster will fail to decrypt them.
   MYSQL_PASS:
   MYSQL_ROOT_PASSWORD:
@@ -45,13 +45,11 @@ dbLocalVolumes:
 ingress:
   enabled: true
   className: haproxy
-  annotations:
-    kubernetes.io/ingress.class: haproxy
   hosts:
-  - host: go-serve.local
-    paths:
-    - path: /api
-      pathType: Exact
+    - host: go-serve.local
+      paths:
+        - path: /api
+          pathType: Exact
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
