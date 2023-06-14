@@ -4,6 +4,7 @@
     - [Challenge rubric](#challenge-rubric)
         - [Main criteria](#main-criteria)
         - [Bonus criteria](#bonus-criteria)
+        - [Application screenshot](#application-screenshot)
     - [Deployment instructions](#deployment-instructions)
         - [Prerequisites](#prerequisites)
         - [Docker compose usage](#docker-compose-usage)
@@ -29,8 +30,12 @@
 |---|---|---|
 | Add autoscaling manifest for number of replicas. | yes | [hpa.yaml](./chart/templates/hpa.yaml) |
 | Add argocd app that points to helm manifests to apply gitops concept. | yes | [application.yml](./application.yml) |
-| Fix a bug in the code that would appear when you test the api | yes | [commit (diff)](https://github.com/janw4ld/go-serve/commit/2156557abdb8eacd93cbc4dbdbf0c557391e1758), [bugfix demo script](./bugfix-demo.sh), [the script's output](./README.d/app-demo.png) |
+| Fix a bug in the code that would appear when you test the api | yes | [commit (diff)](https://github.com/janw4ld/go-serve/commit/2156557abdb8eacd93cbc4dbdbf0c557391e1758), [output screenshot](./README.d/app-screenshot.png), [app demo script](./app-demo.sh), [the script's output](./README.d/app-demo.png) |
 | Secure your containers as much as you can. | subjective |  |
+
+### Application screenshot
+
+![app screenshot](./README.d/app-screenshot.png)
 
 ## Deployment instructions
 ### Prerequisites
@@ -64,7 +69,7 @@ and load it into the scope of the compose command using `env`; This ensures that
 the variables are only accessible to the compose command and not to the rest of
 your shell environment.
 
-- Create `.env` file
+- Create `.env` file, replacing the values in the example with your own
 
     ```console
     $ cat <<EOF >.env
@@ -106,7 +111,7 @@ your shell environment.
 
 #### Adding the repo to argocd
 
-- create a github personal access token for argocd following [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token), a fine-grained token with only "read contents" permission for `janw4ld/go-serve` is recommended.
+- create a github personal access token for argocd following [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)([archive link](https://web.archive.org/web/20230614071110/https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)). A fine-grained token with only "read contents" permission for `janw4ld/go-serve` is recommended.
 
 - add the repo to argocd cli
 
@@ -175,6 +180,20 @@ previous script's output and make sure to indent it correctly
     $ kubectl config set-context --current --namespace=argocd
     Context "kubernetes-admin@kubernetes" modified.
     ```
+
+<!-- 
+- Install chart dependencies
+
+    ```console
+    $ helm dependency update chart/
+    Hang tight while we grab the latest from your chart repositories...
+    ...Successfully got an update from the "bitnami" chart repository
+    Update Complete. ⎈Happy Helming!⎈
+    Saving 1 charts
+    Downloading mysql from repo https://charts.bitnami.com/bitnami
+    Deleting outdated charts
+    ```
+-->
 
 - Apply the application manifest
 
