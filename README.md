@@ -7,10 +7,13 @@
         - [Application screenshot](#application-screenshot)
     - [Deployment instructions](#deployment-instructions)
         - [Prerequisites](#prerequisites)
+            - [In-cluster prerequisites](#in-cluster-prerequisites)
+            - [On client prerequisites](#on-client-prerequisites)
+            - [Machine independent prerequisites](#machine-independent-prerequisites)
         - [Docker compose usage](#docker-compose-usage)
             - [Initializing the project](#initializing-the-project)
             - [Docker compose tl;dr](#docker-compose-tldr)
-        - [Jenkins(CI) pipeline](#jenkinsci-pipeline)
+        - [Jenkins (CI) pipeline](#jenkins-ci-pipeline)
             - [Prerequisite Jenkins plugins](#prerequisite-jenkins-plugins)
             - [Pipeline configuration](#pipeline-configuration)
         - [ArgoCD application deployment](#argocd-application-deployment)
@@ -46,23 +49,48 @@
 
 ### Prerequisites
 
-- On client prerequisites:
-    - [docker](https://docs.docker.com/get-docker/)
-    - [helm](https://helm.sh/)
-    - [kubeseal](https://github.com/bitnami-labs/sealed-secrets#kubeseal)
-    - [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
+PREFACE: This project's helm chart was created using Helm v3 and tested against
+Kubernetes v1.27.2 and your mileage may vary running it with older versions.
 
-- In-cluster prerequisites:
-    - [SealedSecrets](https://artifacthub.io/packages/helm/bitnami-labs/sealed-secrets/2.9.0?modal=install)
-    - [argocd](https://argo-cd.readthedocs.io/en/stable/)
-    - [metrics-server](https://artifacthub.io/packages/helm/metrics-server/metrics-server/3.10.0?modal=install)
-    - [haproxy](https://artifacthub.io/packages/helm/haproxytech/haproxy/1.19.0?modal=install)
+#### In-cluster prerequisites
 
-- Machine independent prerequisites:
-    - A [Jenkins](https://www.jenkins.io/doc/) server with docker installed.
+- A load balancer, on cloud platforms load balancers are usually provided by
+    default but on bare metal clusters you need to install one. I used
+    [MetalLB](https://metallb.universe.tf/) for this project.
+- [argocd](https://argo-cd.readthedocs.io/en/stable/)
+- [SealedSecrets](https://artifacthub.io/packages/helm/bitnami-labs/sealed-secrets/2.9.0?modal=install)
+    : to create k8s Secrets in a way that's safe to commit to git. Another
+    option was Mozilla SOPS, which integrates with key management servers but
+    we're going with SealedSecrets because SOPS is overkill for this project.
+- [metrics-server](https://artifacthub.io/packages/helm/metrics-server/metrics-server/3.10.0?modal=install)
+    : to enable Horizontal Pod Autoscaling.
+- [haproxy](https://artifacthub.io/packages/helm/haproxytech/haproxy/1.19.0?modal=install)
+    : a high performance ingress controller to expose the application
+    externally using the load balancer.
 
-NOTE: This project's helm chart was created using Helm v3 and tested against
-Kubernetes v1.27.2 and your mileage may vary with older versions.
+#### On client prerequisites
+
+- [docker](https://docs.docker.com/get-docker/)
+- [helm](https://helm.sh/)
+- [kubeseal](https://github.com/bitnami-labs/sealed-secrets#kubeseal)
+    : to create encrypted values for the SealedSecrets.
+- [argocd cli](https://argo-cd.readthedocs.io/en/stable/cli_installation/)
+
+#### Machine independent prerequisites
+
+- A [Docker Hub](https://hub.docker.com/) account.
+- A [Jenkins](https://www.jenkins.io/doc/) server with docker installed.  
+
+The docker-compose manifest
+[`jenkins.docker-compose.yml`](./jenkins.docker-compose.yml) can be used to run
+a local Jenkins server with docker & git capabilities. It's a modified version
+of the official [Jenkins](https://hub.docker.com/r/jenkins/jenkins) alpine image
+with the docker client installed and the local `/var/run/docker.sock` socket
+bound to the container; This allows the Jenkins server to run docker commands on
+the host machine which is a frugal but less secure Docker-in-Docker solution,
+and should never be used in a production environment. For a better
+Docker-in-Docker solution see
+[sysbox dind](https://github.com/nestybox/sysbox/blob/master/docs/user-guide/dind.md)
 
 <!--TODO for detailed instructions on prerequisite installation see [here]() -->
 
@@ -145,7 +173,7 @@ either create a `.env` file or set the variables in your shell before running
     docker-compose exec server <command>
     ```
 
-### Jenkins(CI) pipeline
+### Jenkins (CI) pipeline
 
 The Jenkins pipeline is configured to run on every push to the `main` branch and:
 
@@ -206,14 +234,17 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
 
 #### Creating sealed secrets for the application
 
-NOTE: sealed secrets are encrypted using a public key unique to each cluster,
-with a scope limited to the namespace the sealed secret is created in and the
+SealedSecrets are values encrypted using a public key unique to each cluster,
+with a scope limited to both the namespace the secret is created in and the
 exact name of the secret. This means that the secrets created in this example
-will only work in the cluster they were created by, and you'll have to generate
-new ones for your cluster for `./application.yml` to deploy successfully.
+will only work in the cluster they were created by, and new passwords will have
+to be generated so that [`application.yml`](./application.yml) deploys
+successfully to other clusters.
 
 - Make sure your kubectl context is set to the cluster you're deploying to.
 - Generate raw sealed values for the database secrets using the following script
+  changing "default" to the namespace you're deploying to and "db-secret" to the
+  value of `.Values.dbSecretName` if it was overridden in the chart values.
 
     ```bash
     new_sealed_value() {
