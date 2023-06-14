@@ -1,0 +1,22 @@
+version: "3"
+services:
+  jenkins:
+    image: janw4ld/jenkins:2.401.1-lts-alpine
+    build:
+      dockerfile_inline: |
+        FROM jenkins/jenkins:2.401.1-lts-alpine
+        USER root
+        RUN apk add --no-cache docker-cli-buildx
+        USER jenkins
+        RUN mkdir -p ~/.ssh ; ssh-keyscan github.com >> ~/.ssh/known_hosts
+    restart: unless-stopped
+    ports:
+      - 8080:8080
+      - 50000:50000
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      # https://github.com/nestybox/sysbox
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  jenkins_home:
