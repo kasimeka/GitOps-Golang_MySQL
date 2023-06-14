@@ -6,6 +6,7 @@
         - [Bonus criteria](#bonus-criteria)
     - [Deployment instructions](#deployment-instructions)
         - [Prerequisites](#prerequisites)
+        - [Docker compose usage](#docker-compose-usage)
         - [ArgoCD application deployment](#argocd-application-deployment)
             - [Adding the repo to argocd](#adding-the-repo-to-argocd)
             - [Creating sealed secrets for the application](#creating-sealed-secrets-for-the-application)
@@ -51,7 +52,53 @@
 
 <!--TODO for detailed instructions on prerequisite installation see [here]() -->
 
-<!--TODO ### Docker compose usage -->
+### Docker compose usage
+
+The `docker-compose.yml` file specifies container environment variables
+explicitly by their names, taking them from the environment, instead of
+including all variables from the `.env` file to prevent cluttering all
+containers with unnecessary variables, so you need to set the variables in your
+shell before running `docker-compose up`. On POSIX-compliant systems, it is
+recommended to create a `.env` file in the same directory as the compose file
+and load it into the scope of the compose command using `env`; This ensures that
+the variables are only accessible to the compose command and not to the rest of
+your shell environment.
+
+- Create `.env` file
+
+    ```console
+    $ cat <<EOF >.env
+    MYSQL_HOST=mysql
+    MYSQL_USER=go-server
+    MYSQL_PASS=strongandcomplicatedpassword
+    MYSQL_PORT=9739
+    # the root password is randomized, to set it manually remove
+    # 'MYSQL_RANDOM_ROOT_PASSWORD: "yes"' from `docker-compose.yml`
+    EOF
+    ```
+
+- Run the compose file and wait for the database to initialize
+
+    ```console
+    $ env $(cat .env) docker-compose up -d \
+    > && sleep 30 && docker container ls # delay for db creation
+    Building server
+    [+] Building 0.7s (13/13) FINISHED
+    ...
+    WARNING: Image for service server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+    Starting go-serve_database_1 ... done
+    Starting go-serve_server_1   ... done
+    CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+    4df38cde1cb8   go-serve_server   "./internship-2023"      30 seconds ago   Up 15 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   go-serve_server_1
+    f4aa24e83b47   mysql:8.0         "docker-entrypoint.s…"   30 seconds ago   Up 30 seconds   3306/tcp, 33060/tcp                         go-serve_database_1
+    ```
+
+- Test the application
+
+    ```console
+    $ curl localhost:9090/healthcheck
+    {"status":"ok"}
+    ```
 
 <!--TODO ### CI pipeline/image build -->
 
@@ -166,8 +213,9 @@ k8s-ish way of waiting for readiness.
     This means that the application is accessible at `go-server.local/api`, but
     note that the external IP address `192.168.1.241` is assigned automatically
     by the cluster's load balancer, and the hostname `go-server.local` is
-    declared in the chart's values and should be overridden in application.yml
-    to match the domain name pointing to our ingress controller.
+    declared in the chart's values and should be overridden in `application.yml`
+    `.spec.helm.values` to match the domain name pointing to our ingress
+    controller.
 
     Since this is an on-premise demo with no DNS, we can either add the hostname
     to `/etc/hosts` by running `echo go-server.local | sudo tee -a /etc/hosts`
