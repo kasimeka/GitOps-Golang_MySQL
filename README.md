@@ -1,6 +1,6 @@
-# go-serve gitops deployment
+# go-serve GitOps Deployment
 
-- [go-serve gitops deployment](#go-serve-gitops-deployment)
+- [go-serve GitOps Deployment](#go-serve-gitops-deployment)
     - [Challenge rubric](#challenge-rubric)
         - [Main criteria](#main-criteria)
         - [Bonus criteria](#bonus-criteria)
@@ -21,6 +21,14 @@
             - [Creating sealed secrets for the application](#creating-sealed-secrets-for-the-application)
             - [Deploying the application](#deploying-the-application)
             - [Accessing the application](#accessing-the-application)
+    - [Further reading](#further-reading)
+        - [MetalLB](#metallb)
+        - [ArgoCD](#argocd)
+        - [SealedSecrets](#sealedsecrets)
+        - [metrics-server](#metrics-server)
+        - [haproxy-ingress](#haproxy-ingress)
+        - [helm](#helm)
+        - [Jenkins](#jenkins)
 
 ## Challenge rubric
 
@@ -64,7 +72,7 @@ Kubernetes v1.27.2 and your mileage may vary running it with older versions.
     we're going with SealedSecrets because SOPS is overkill for this project.
 - [metrics-server](https://artifacthub.io/packages/helm/metrics-server/metrics-server/3.10.0?modal=install)
     : to enable Horizontal Pod Autoscaling.
-- [haproxy](https://artifacthub.io/packages/helm/haproxytech/haproxy/1.19.0?modal=install)
+- [haproxy-ingress](https://artifacthub.io/packages/helm/haproxy-ingress/haproxy-ingress/0.14.3?modal=install)
     : a high performance ingress controller to expose the application
     externally using the load balancer.
 
@@ -372,3 +380,47 @@ k8s-ish way of waiting for readiness.
     ```
 
     [screenshot](./README.d/app-screenshot.png)
+
+## Further reading
+
+### MetalLB
+
+- [MetalLB README](https://metallb.universe.tf/)
+- [Metallb Advanced Layer 2 Configuration](https://metallb.universe.tf/configuration/_advanced_l2_configuration/)
+- [Metallb Usage](https://metallb.universe.tf/usage/)
+
+### ArgoCD
+
+- [ArgoCD Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
+- [ArgoCD Application CRD](https://argo-cd.readthedocs.io/en/stable/operator-manual/application.yaml)
+
+### SealedSecrets
+
+- [SealedSecrets README](https://github.com/bitnami-labs/sealed-secrets#readme)
+
+### metrics-server
+
+- [metrics-server README](https://github.com/kubernetes-sigs/metrics-server#readme)
+- [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Resource metrics pipeline](https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/)
+
+### haproxy-ingress
+
+- [haproxy-ingress Getting Started](https://haproxy-ingress.github.io/docs/getting-started)
+- [haproxy-ingress Configuration keys](https://haproxy-ingress.github.io/docs/configuration/keys/)
+
+### helm
+
+- [helm Glossary](https://helm.sh/docs/glossary/)
+- [helm install](https://helm.sh/docs/helm/helm_install/)
+- [helm dependency](https://helm.sh/docs/helm/helm_dependency/)
+- [Customizing the chart before installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
+- [go templates](https://pkg.go.dev/text/template)
+
+### Jenkins
+
+- [Getting started with Pipeline](https://www.jenkins.io/doc/book/pipeline/getting-started/)
+- [Slack Notification plugin](https://plugins.jenkins.io/slack/)
+- [Pipeline Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
+- [the Groovy language syntax](https://groovy-lang.org/syntax.html)
+- [Using a Jenkinsfile](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/)
