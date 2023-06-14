@@ -1,3 +1,7 @@
+{{- /*
+Ignore the user's set storageClass value if they have requested local hostPath  
+volumes.
+*/ -}}
 {{- define "global.storageClass" -}}
 {{- if .Values.dbLocalVolumes.create -}}
 ""
@@ -6,6 +10,10 @@
 {{- end }}
 {{- end -}}
 
+{{- /* 
+Generate database hostname consistent with the naming rules used by the
+bitnami/mysql dependency chart to correctly connect the server to the db.
+*/ -}}
 {{- define "db.hostname" -}}
 {{- default .Release.Name .Values.nameOverride | trunc 31 | trimSuffix "-" }}
 {{- if .Values.mysql.nameOverride -}}
