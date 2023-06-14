@@ -1,6 +1,9 @@
 # go-serve GitOps Deployment
 
+## Table of contents
+
 - [go-serve GitOps Deployment](#go-serve-gitops-deployment)
+    - [Table of contents](#table-of-contents)
     - [Challenge rubric](#challenge-rubric)
         - [Main criteria](#main-criteria)
         - [Bonus criteria](#bonus-criteria)
@@ -10,7 +13,7 @@
             - [In-cluster prerequisites](#in-cluster-prerequisites)
             - [On client prerequisites](#on-client-prerequisites)
             - [Machine independent prerequisites](#machine-independent-prerequisites)
-        - [Docker compose usage](#docker-compose-usage)
+        - [docker-compose.yml usage](#docker-composeyml-usage)
             - [Initializing the project](#initializing-the-project)
             - [Docker compose tl;dr](#docker-compose-tldr)
         - [Jenkins (CI) pipeline](#jenkins-ci-pipeline)
@@ -22,13 +25,6 @@
             - [Deploying the application](#deploying-the-application)
             - [Accessing the application](#accessing-the-application)
     - [Further reading](#further-reading)
-        - [MetalLB](#metallb)
-        - [ArgoCD](#argocd)
-        - [SealedSecrets](#sealedsecrets)
-        - [metrics-server](#metrics-server)
-        - [haproxy-ingress](#haproxy-ingress)
-        - [helm](#helm)
-        - [Jenkins](#jenkins)
 
 ## Challenge rubric
 
@@ -102,7 +98,7 @@ Docker-in-Docker solution see
 
 <!--TODO for detailed instructions on prerequisite installation see [here]() -->
 
-### Docker compose usage
+### docker-compose.yml usage
 
 #### Initializing the project
 
@@ -383,44 +379,24 @@ k8s-ish way of waiting for readiness.
 
 ## Further reading
 
-### MetalLB
-
 - [MetalLB README](https://metallb.universe.tf/)
 - [Metallb Advanced Layer 2 Configuration](https://metallb.universe.tf/configuration/_advanced_l2_configuration/)
 - [Metallb Usage](https://metallb.universe.tf/usage/)
-
-### ArgoCD
-
 - [ArgoCD Getting Started](https://argo-cd.readthedocs.io/en/stable/getting_started/)
 - [ArgoCD Application CRD](https://argo-cd.readthedocs.io/en/stable/operator-manual/application.yaml)
-
-### SealedSecrets
-
 - [SealedSecrets README](https://github.com/bitnami-labs/sealed-secrets#readme)
-
-### metrics-server
-
 - [metrics-server README](https://github.com/kubernetes-sigs/metrics-server#readme)
-- [HorizontalPodAutoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
-- [Resource metrics pipeline](https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/)
-
-### haproxy-ingress
-
+- [HorizontalPodAutoscaler - Kubernetes docs](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/)
+- [Resource metrics pipeline - Kubernetes docs](https://kubernetes.io/docs/tasks/debug/debug-cluster/resource-metrics-pipeline/)
 - [haproxy-ingress Getting Started](https://haproxy-ingress.github.io/docs/getting-started)
 - [haproxy-ingress Configuration keys](https://haproxy-ingress.github.io/docs/configuration/keys/)
-
-### helm
-
 - [helm Glossary](https://helm.sh/docs/glossary/)
 - [helm install](https://helm.sh/docs/helm/helm_install/)
 - [helm dependency](https://helm.sh/docs/helm/helm_dependency/)
-- [Customizing the chart before installing](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
+- [Customizing the chart before installing - Helm docs](https://helm.sh/docs/intro/using_helm/#customizing-the-chart-before-installing)
 - [go templates](https://pkg.go.dev/text/template)
-
-### Jenkins
-
-- [Getting started with Pipeline](https://www.jenkins.io/doc/book/pipeline/getting-started/)
+- [Getting started with Pipeline - Jenkins Handbook](https://www.jenkins.io/doc/book/pipeline/getting-started/)
 - [Slack Notification plugin](https://plugins.jenkins.io/slack/)
-- [Pipeline Syntax](https://www.jenkins.io/doc/book/pipeline/syntax/)
+- [Pipeline Syntax - Jenkins Handbook](https://www.jenkins.io/doc/book/pipeline/syntax/)
 - [the Groovy language syntax](https://groovy-lang.org/syntax.html)
-- [Using a Jenkinsfile](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/)
+- [Using a Jenkinsfile - Jenkins Handbook](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/)
