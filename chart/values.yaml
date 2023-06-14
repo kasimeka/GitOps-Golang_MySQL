@@ -16,6 +16,7 @@ service:
 # db and backend common variables are better configured with subchart value
 # templating but it's not supported by helm (yet)
 # https://github.com/helm/helm/pull/6876#pullrequestreview-482774751
+# also see .mysql below before editing any anchored values
 global:
   # this value is ignored when dbLocalVolumes.create=true
   storageClass: &storageClass ""
@@ -70,10 +71,13 @@ autoscaling:
   targetCPUUtilizationPercentage: 70
   # targetMemoryUtilizationPercentage: 80
 
+# make sure that all the yaml references below are explicitly re-stated in your
+# values.yml otherwise, helm will fail to render the templates (but don't worry,
+# it will give you nice error messages!)
 mysql:
   global:
     storageClass: *storageClass
-  nameOverride: db
+  nameOverride: db  # not necessary but the default name is not descriptive  
   architecture: replication
   auth:
     database: internship # hardcoded here since it's hardcoded in the server code
