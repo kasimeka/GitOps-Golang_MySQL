@@ -8,6 +8,11 @@
     - [Deployment instructions](#deployment-instructions)
         - [Prerequisites](#prerequisites)
         - [Docker compose usage](#docker-compose-usage)
+            - [Initializing the project](#initializing-the-project)
+            - [Docker compose tl;dr](#docker-compose-tldr)
+        - [Jenkins(CI) pipeline](#jenkinsci-pipeline)
+            - [Prerequisite Jenkins plugins](#prerequisite-jenkins-plugins)
+            - [Pipeline configuration](#pipeline-configuration)
         - [ArgoCD application deployment](#argocd-application-deployment)
             - [Adding the repo to argocd](#adding-the-repo-to-argocd)
             - [Creating sealed secrets for the application](#creating-sealed-secrets-for-the-application)
@@ -28,7 +33,7 @@
 ### Bonus criteria
 | criterion | completed | artifacts |
 |---|---|---|
-| Add autoscaling manifest for number of replicas. | yes | [hpa.yaml](./chart/templates/hpa.yaml) |
+| Add autoscaling manifest for number of replicas. | yes | [hpa.yaml](./chart/templates/hpa.yaml), [cluster screenshot](./README.d/cluster-screenshot.png) |
 | Add argocd app that points to helm manifests to apply gitops concept. | yes | [application.yml](./application.yml) |
 | Fix a bug in the code that would appear when you test the api | yes | [commit (diff)](https://github.com/janw4ld/go-serve/commit/2156557abdb8eacd93cbc4dbdbf0c557391e1758), [output screenshot](./README.d/app-screenshot.png), [app demo script](./app-demo.sh), [the script's output](./README.d/app-demo.png) |
 | Secure your containers as much as you can. | subjective |  |
@@ -38,6 +43,7 @@
 ![app screenshot](./README.d/app-screenshot.png)
 
 ## Deployment instructions
+
 ### Prerequisites
 
 - On client prerequisites:
@@ -55,19 +61,21 @@
 - Machine independent prerequisites:
     - A [Jenkins](https://www.jenkins.io/doc/) server with docker installed.
 
+NOTE: This project's helm chart was created using Helm v3 and tested against
+Kubernetes v1.27.2 and your mileage may vary with older versions.
+
 <!--TODO for detailed instructions on prerequisite installation see [here]() -->
 
 ### Docker compose usage
 
-The `docker-compose.yml` file specifies container environment variables
-explicitly by their names, taking them from the environment, instead of
-including all variables from the `.env` file to prevent cluttering all
-containers with unnecessary variables, so you need to set the variables in your
-shell before running `docker-compose up`. On POSIX-compliant systems, it is
-recommended to create a `.env` file in the same directory as the compose file
-and load it into the scope of the compose command using `env`; This ensures that
-the variables are only accessible to the compose command and not to the rest of
-your shell environment.
+#### Initializing the project
+
+The `docker-compose.yml` file populates container environment variables
+explicitly by their names to prevent cluttering all containers with unnecessary
+variables. It takes these variables either from its parent environment or by
+automatically loading a `.env` file in the working directory, so you need to
+either create a `.env` file or set the variables in your shell before running
+`docker-compose up`.
 
 - Create `.env` file, replacing the values in the example with your own
 
@@ -85,7 +93,7 @@ your shell environment.
 - Run the compose file and wait for the database to initialize
 
     ```console
-    $ env $(cat .env) docker-compose up -d \
+    $ docker-compose up -d \
     > && sleep 30 && docker container ls # delay for db creation
     Building server
     [+] Building 0.7s (13/13) FINISHED
@@ -105,7 +113,81 @@ your shell environment.
     {"status":"ok"}
     ```
 
-<!--TODO ### CI pipeline/image build -->
+#### Docker compose tl;dr
+
+- Starting the application
+
+    ```shell
+    docker-compose start
+    ```
+
+- Stopping the application
+
+    ```shell
+    docker-compose stop
+    ```
+
+- Removing the application
+
+    ```shell
+    docker-compose down
+    ```
+
+- Removing the application and its volumes
+
+    ```shell
+    docker-compose down -v
+    ```
+
+- Running a command in the application container
+
+    ```shell
+    docker-compose exec server <command>
+    ```
+
+### Jenkins(CI) pipeline
+
+The Jenkins pipeline is configured to run on every push to the `main` branch and:
+
+- Build the application image from [`Dockerfile`](./Dockerfile)
+- Tag the image with the first 7 characters of the commit hash and the Jenkins
+  build number
+- Push the image to DockerHub using a DockerHub personal access token (see
+  [Pipeline configuration](#pipeline-configuration))
+- In the case of a failure, send a notification to the `#ana-w-jenkins` channel
+  on Slack, with the job name, git branch and commit hash.
+
+#### Prerequisite Jenkins plugins
+
+- Jenkins' built-in plugins:
+    - Github Plugin
+    - Github API Plugin
+    - Pipeline
+    - Pipeline: GitHub Groovy Libraries
+- Third-party plugins:
+    - [Slack Notification Plugin](https://plugins.jenkins.io/slack/)
+
+#### Pipeline configuration
+
+- Create a DockerHub personal access token with "Read & Write" permission from
+  [this page](https://hub.docker.com/settings/security?generateToken=true), then
+  copy the token to your clipboard
+  ![generate token](./README.d/dockerhub-pat.png)
+- Create a new Jenkins "username and password" credential from "`Manage Jenkins`
+  -> `Credentials` -> `<your credentials scope>` -> `<your credentials domain>`
+  -> `+ Add Credentials`"
+  ![add credentials](./README.d/add-cred.png)
+- Set the ID to `dockerhub-login`, the username to your dockerhub username and
+  the password to the personal access token created previously.
+  ![create credentials](./README.d/create-cred.png)
+- Create a new pipeline job from "`New Item` -> `Pipeline`", configure the
+  **Build triggers** section to your liking and in the **Pipeline** section set
+  the definition to "Pipeline script from SCM", connect the job to your git repo
+  with your preferred method and set the **Script Path** to `Jenkinsfile`. For
+  more information refer to
+  [Jenkins' Handbook: Defining a Pipeline: In SCM](https://www.jenkins.io/doc/book/pipeline/getting-started/#defining-a-pipeline-in-scm)
+  ([archive link](https://web.archive.org/web/20230614182145/https://www.jenkins.io/doc/book/pipeline/getting-started/))
+  ![pipeline conf](./README.d/pipeline-conf.png)
 
 ### ArgoCD application deployment
 
@@ -174,14 +256,14 @@ previous script's output and make sure to indent it correctly
 
 #### Deploying the application
 
-- Switch default kubectl namespace to argocd (it's required by argocd cli)
+- Switch default kubectl namespace to argocd (it's recommended by argocd cli)
 
     ```console
     $ kubectl config set-context --current --namespace=argocd
     Context "kubernetes-admin@kubernetes" modified.
     ```
 
-<!-- 
+<!--
 - Install chart dependencies
 
     ```console
@@ -212,7 +294,7 @@ previous script's output and make sure to indent it correctly
 
 <sup>
 The restart is okay because the server doesn't wait for the database and
-crashes, and crashes and restarts (instead of init containers) are the most
+crashes. And crashes and retries (instead of init containers) are the most
 k8s-ish way of waiting for readiness.
 </sup>
 
@@ -241,7 +323,7 @@ k8s-ish way of waiting for readiness.
     or send our requests to the ingress controller at `192.168.1.241` with the
     `Host` header set to `go-server.local`
 
-- Send requests to the application  
+- Send requests to the application
 
     <sup>
     note that the /healthcheck endpoint is not exposed outside of the cluster in
@@ -250,7 +332,7 @@ k8s-ish way of waiting for readiness.
     </sup>
 
     ```console
-    $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api 
+    $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
     null
     $ curl -X POST -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
     OK
@@ -258,4 +340,4 @@ k8s-ish way of waiting for readiness.
     [{"createdAt":"2023-06-13T15:35:53Z","id":1}]
     ```
 
-    [output screenshot](./README.d/app-screenshot.png)
+    [screenshot](./README.d/app-screenshot.png)
