@@ -28,9 +28,11 @@ dbPort: &dbPort 34728
 dbPrimaryPVCName: &dbPrimaryPVC db-primary-pvc
 dbSecondaryPVCName: &dbSecondaryPVC db-secondary-pvc
 
+# One-way encrypted values using kubeseal. Sealed values must be either created
+# for the same release namespace or with cluster-wide scope. Otherwise, the
+# cluster will fail to decrypt them. For more information see
+# <https://github.com/janw4ld/go-serve#creating-sealed-secrets-for-the-application>
 sealed:
-  # sealed values must be either created for the same release namespace or with
-  # cluster-wide scope. otherwise, the cluster will fail to decrypt them.
   MYSQL_PASS:
   MYSQL_ROOT_PASSWORD:
   MYSQL_REPLICATION_PASSWORD:

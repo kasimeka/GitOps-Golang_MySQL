@@ -90,9 +90,9 @@ The docker-compose manifest
 a local Jenkins server with docker & git capabilities. It's a modified version
 of the official [Jenkins](https://hub.docker.com/r/jenkins/jenkins) alpine image
 with the docker client installed and the local `/var/run/docker.sock` socket
-bound to the container; This allows the Jenkins server to run docker commands on
-the host machine which is a frugal but less secure Docker-in-Docker solution,
-and should never be used in a production environment. For a better
+bound to the container's; This allows the Jenkins server to run docker commands
+on the host machine, which is a frugal but less secure Docker-in-Docker
+solution, and should never be used in a production environment. For a better
 Docker-in-Docker solution see
 [sysbox dind](https://github.com/nestybox/sysbox/blob/master/docs/user-guide/dind.md)
 
@@ -102,12 +102,12 @@ Docker-in-Docker solution see
 
 #### Initializing the project
 
-The `docker-compose.yml` file populates container environment variables
-explicitly by their names to prevent cluttering all containers with unnecessary
-variables. It takes these variables either from its parent environment or by
-automatically loading a `.env` file in the working directory, so you need to
-either create a `.env` file or set the variables in your shell before running
-`docker-compose up`.
+The [`docker-compose.yml`](./docker-compose.yml) file populates container
+environment variables explicitly by their names to prevent cluttering all
+containers with unnecessary variables. It takes these variables either from its
+parent environment or by automatically loading a `.env` file in the working
+directory, so you need to either create a `.env` file or set the variables in
+your shell before running `docker-compose up`.
 
 - Create `.env` file, replacing the values in the example with your own
 
@@ -225,9 +225,13 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
 
 #### Adding the repo to argocd
 
-- create a github personal access token for argocd following [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)([archive link](https://web.archive.org/web/20230614071110/https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)). A fine-grained token with only "read contents" permission for `janw4ld/go-serve` is recommended.
+- Create a github personal access token for argocd following
+  [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
+  ([archive link](https://web.archive.org/web/20230614071110/https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)).
+  A fine-grained token with only "read contents" permission for
+  `janw4ld/go-serve` is recommended.
 
-- add the repo to argocd cli
+- Add the repo to the argocd cli
 
     ```console
     $ argocd repo add https://github.com/janw4ld/go-serve.git \
@@ -243,12 +247,13 @@ with a scope limited to both the namespace the secret is created in and the
 exact name of the secret. This means that the secrets created in this example
 will only work in the cluster they were created by, and new passwords will have
 to be generated so that [`application.yml`](./application.yml) deploys
-successfully to other clusters.
+successfully to other clusters. For more information see
+[SealedSecrets README#scopes](https://github.com/bitnami-labs/sealed-secrets#scopes)
 
 - Make sure your kubectl context is set to the cluster you're deploying to.
 - Generate raw sealed values for the database secrets using the following script
   changing "default" to the namespace you're deploying to and "db-secret" to the
-  value of `.Values.dbSecretName` if it was overridden in the chart values.
+  value of `.Values.dbSecretName` if it was overridden.
 
     ```bash
     new_sealed_value() {
