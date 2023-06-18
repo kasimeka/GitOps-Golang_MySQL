@@ -50,7 +50,7 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "asserts.dbSecondaryPVCName" -}}
+{{- define "asserts.dbSecondaryPVC" -}}
 {{- if (ne .Values.dbSecondaryPVCName .Values.mysql.secondary.persistence.existingClaim) -}}
 {{- fail (printf "%s%s%s%s%s%s%s%s%s%s"
 "values.yml consistency error: .Values.dbSecondaryPVCName and"
