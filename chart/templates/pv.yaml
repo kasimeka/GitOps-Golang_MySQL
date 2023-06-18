@@ -1,6 +1,4 @@
 {{- if and (eq .Values.mysql.architecture "replication") .Values.dbLocalVolumes.create }}
-{{ include "asserts.dbPrimaryPVC" . }}
-{{ include "asserts.dbSecondaryPVC" . }}
 apiVersion: v1
 kind: PersistentVolume
 metadata:
