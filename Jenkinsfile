@@ -6,6 +6,12 @@ pipeline {
     }
 
     stages {
+        stage('audit-code') {
+            steps {
+                sh 'grype dir:src --fail-on medium'
+            }
+        }
+
         stage('build') {
             steps {
                 withCredentials([usernamePassword(
@@ -19,7 +25,7 @@ pipeline {
             }
         }
 
-        stage('audit') {
+        stage('audit-image') {
             steps {
                 sh "grype janw4ld/go-serve:$TAG --fail-on medium"
             }
