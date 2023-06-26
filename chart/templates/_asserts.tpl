@@ -35,7 +35,7 @@
 
 {{- define "asserts.dbPrimaryPVC" -}}
 {{- if (ne .Values.dbPrimaryPVCName .Values.mysql.primary.persistence.existingClaim) -}}
-{{- fail (printf "%s%s%s%s%s%s%s%s%s"
+{{- fail (printf "%s%s%s%s%s%s%s%s%s%s"
 "values.yml consistency error: .Values.dbPrimaryPVCName and"
 " .Values.mysql.primary.persistence.existingClaim must have the same value\n"
 "Use yaml anchors to avoid duplication.\n"
@@ -50,7 +50,7 @@
 {{- end -}}
 {{- end -}}
 
-{{- define "asserts.dbSecondaryPVCName" -}}
+{{- define "asserts.dbSecondaryPVC" -}}
 {{- if (ne .Values.dbSecondaryPVCName .Values.mysql.secondary.persistence.existingClaim) -}}
 {{- fail (printf "%s%s%s%s%s%s%s%s%s%s"
 "values.yml consistency error: .Values.dbSecondaryPVCName and"
@@ -69,7 +69,7 @@
 
 {{- define "asserts.global.storageClass" -}}
 {{- if (ne .Values.global.storageClass .Values.mysql.global.storageClass) -}}
-{{- fail (printf "%s%s%s%s%s%s%s%s%s"
+{{- fail (printf "%s%s%s%s%s%s%s%s%s%s"
 "values.yml consistency error: .Values.global.storageClass"
 " and .Values.mysql.global.storageClass must have the same value\n"
 "Use yaml anchors to avoid duplication.\n"
@@ -86,7 +86,7 @@
 
 {{- define "asserts.dbSecretName" -}}
 {{- if (ne .Values.dbSecretName .Values.mysql.auth.existingSecret) -}}
-{{- fail (printf "%s%s%s%s%s%s%s%s%s"
+{{- fail (printf "%s%s%s%s%s%s%s%s%s%s"
 "values.yml consistency error: .Values.dbSecretName and"
 " .Values.mysql.auth.existingSecret must have the same value\n"
 "Use yaml anchors to avoid duplication.\n"

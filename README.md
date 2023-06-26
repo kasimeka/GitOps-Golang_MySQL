@@ -184,6 +184,9 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
 - Build the application image from [`Dockerfile`](./Dockerfile)
 - Tag the image with the first 7 characters of the commit hash and the Jenkins
   build number
+- Scan the built image for vulnerabilities using
+  [grype](https://github.com/anchore/grype), and fail the pipeline if any medium
+  severity vulnerabilities or higher are found
 - Push the image to DockerHub using a DockerHub personal access token (see
   [Pipeline configuration](#pipeline-configuration))
 - In the case of a failure, send a notification to the `#ana-w-jenkins` channel

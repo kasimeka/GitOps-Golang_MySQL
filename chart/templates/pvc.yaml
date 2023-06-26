@@ -1,4 +1,6 @@
 {{ include "asserts.global.storageClass" . }}
+{{ include "asserts.dbPrimaryPVC" . }}
+{{ include "asserts.dbSecondaryPVC" . }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
