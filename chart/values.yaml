@@ -79,7 +79,7 @@ autoscaling:
 mysql:
   global:
     storageClass: *storageClass
-  nameOverride: db  # not necessary but the default name is not descriptive  
+  nameOverride: db  # not necessary but the default name is not descriptive
   architecture: replication
   auth:
     database: internship # hardcoded here since it's hardcoded in the server code
