@@ -16,12 +16,11 @@ services:
       - backend
     depends_on:
       - database
-    links:
-      - "database:${MYSQL_HOST}"
 
   database:
     image: mysql:8.0
     restart: unless-stopped
+    hostname: ${MYSQL_HOST}
     command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: internship # hardcoded here since it's hardcoded in the server code
