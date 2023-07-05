@@ -8,7 +8,7 @@ metadata:
 spec:
   storageClassName: ""
   claimRef:
-    name: {{ .Values.dbPrimaryPVCName }}
+    name: {{ .Values.mysql.primary.persistence.existingClaim }}
     namespace: {{ .Release.Namespace }}
   capacity:
     storage: {{ .Values.dbLocalVolumes.primaryVolSize }}
@@ -26,7 +26,7 @@ metadata:
 spec:
   storageClassName: ""
   claimRef:
-    name: {{ .Values.dbSecondaryPVCName }}
+    name: {{ .Values.mysql.secondary.persistence.existingClaim }}
     namespace: {{ .Release.Namespace }}
   capacity:
     storage: {{ .Values.dbLocalVolumes.secondaryVolSize }}

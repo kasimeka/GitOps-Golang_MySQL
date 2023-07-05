@@ -1,6 +1,3 @@
-{{ include "asserts.dbPort" . }}
-{{ include "asserts.dbUser" . }}
-{{ include "asserts.dbSecretName" . }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -38,15 +35,15 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: MYSQL_PORT
-              value: "{{ .Values.dbPort }}"
+              value: "{{ .Values.mysql.primary.service.ports.mysql }}"
             - name: MYSQL_HOST
               value: {{ include "db.hostname" . }}
             - name: MYSQL_USER
-              value: "{{ .Values.dbUser }}"
+              value: "{{ .Values.mysql.auth.username }}"
             - name: MYSQL_PASS
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.dbSecretName }}
+                  name: {{ .Values.mysql.auth.existingSecret }}
                   key: mysql-password
           ports:
             - name: http

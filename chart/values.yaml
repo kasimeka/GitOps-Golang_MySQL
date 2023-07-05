@@ -13,21 +13,6 @@ service:
   initialLivenessDelay: 35
   initialReadinessDelay: 5
 
-# db and backend common variables are better configured with subchart value
-# templating but it's not supported by helm (yet)
-# https://github.com/helm/helm/pull/6876#pullrequestreview-482774751
-# also see .mysql below before editing any anchored values
-global:
-  # this value is ignored when dbLocalVolumes.create=true
-  storageClass: &storageClass ""
-
-dbSecretName: &dbSecretName db-secret
-dbUser: &dbUser go-server
-dbPort: &dbPort 34728
-
-dbPrimaryPVCName: &dbPrimaryPVC db-primary-pvc
-dbSecondaryPVCName: &dbSecondaryPVC db-secondary-pvc
-
 # One-way encrypted values using kubeseal. Sealed values must be either created
 # for the same release namespace or with cluster-wide scope. Otherwise, the
 # cluster will fail to decrypt them. For more information see
@@ -78,23 +63,24 @@ autoscaling:
 # it will give you nice error messages!)
 mysql:
   global:
-    storageClass: *storageClass
+  # this value is ignored when dbLocalVolumes.create=true
+    storageClass: ""
   nameOverride: db  # not necessary but the default name is not descriptive
   architecture: replication
   auth:
     database: internship # hardcoded here since it's hardcoded in the server code
-    username: *dbUser
-    existingSecret: *dbSecretName
+    username: go-server
+    existingSecret: db-secret
   primary:
     service:
       ports:
-        mysql: *dbPort
+        mysql: 34728
     persistence:
-      existingClaim: *dbPrimaryPVC
+      existingClaim: db-primary-pvc
   secondary:
     replicaCount: 2
     persistence:
-      existingClaim: *dbSecondaryPVC
+      existingClaim: db-secondary-pvc
   volumePermissions:
     enabled: true
 
