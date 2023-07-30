@@ -83,7 +83,7 @@ Kubernetes v1.27.2 and your mileage may vary running it with older versions.
 #### Machine independent prerequisites
 
 - A [Docker Hub](https://hub.docker.com/) account.
-- A [Jenkins](https://www.jenkins.io/doc/) server with docker installed.  
+- A [Jenkins](https://www.jenkins.io/doc/) server with docker installed.
 
 The docker-compose manifest
 [`jenkins.docker-compose.yml`](./jenkins.docker-compose.yml) can be used to run
@@ -266,9 +266,9 @@ successfully to other clusters. For more information see
     } # random 32 character alphanumeric passwords with 205 bits of entropy
     cat <<EOF
     sealed:
-    MYSQL_PASS: $(new_sealed_value)
-    MYSQL_ROOT_PASSWORD: $(new_sealed_value)
-    MYSQL_REPLICATION_PASSWORD: $(new_sealed_value)
+      MYSQL_PASS: $(new_sealed_value)
+      MYSQL_ROOT_PASSWORD: $(new_sealed_value)
+      MYSQL_REPLICATION_PASSWORD: $(new_sealed_value)
     EOF
     ```
 
