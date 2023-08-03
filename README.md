@@ -260,7 +260,7 @@ successfully to other clusters. For more information see
 
     ```bash
     new_sealed_value() {
-    openssl rand -base64 24 \
+    openssl rand -base64 24 | head -c 32 \
     | kubeseal --raw --name db-secret \
         -n default # change default to the namespace you're deploying to
     } # random 32 character alphanumeric passwords with 205 bits of entropy
