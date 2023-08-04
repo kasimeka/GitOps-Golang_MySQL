@@ -12,7 +12,7 @@
       "properties": {
         "repository": {
           "type": "string",
-          "default": "janw4ld/go-serve"
+          "default": "janw4ld/gitops-golang_mysql"
         },
         "pullPolicy": {
           "type": "string",

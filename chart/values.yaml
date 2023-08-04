@@ -3,7 +3,7 @@
 # Declare variables to be passed into your templates.
 
 image:
-  repository: janw4ld/go-serve
+  repository: janw4ld/gitops-golang_mysql
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
@@ -16,7 +16,7 @@ service:
 # One-way encrypted values using kubeseal. Sealed values must be either created
 # for the same release namespace or with cluster-wide scope. Otherwise, the
 # cluster will fail to decrypt them. For more information see
-# <https://github.com/janw4ld/go-serve#creating-sealed-secrets-for-the-application>
+# <https://github.com/janw4ld/gitops-golang_mysql#creating-sealed-secrets-for-the-application>
 sealed:
   MYSQL_PASS:
   MYSQL_ROOT_PASSWORD:

@@ -232,15 +232,15 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
   [this guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-fine-grained-personal-access-token)
   ([archive link](https://web.archive.org/web/20230614071110/https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)).
   A fine-grained token with only "read contents" permission for
-  `janw4ld/go-serve` is recommended.
+  `janw4ld/gitops-golang_mysql` is recommended.
 
 - Add the repo to the argocd cli
 
     ```console
-    $ argocd repo add https://github.com/janw4ld/go-serve.git \
+    $ argocd repo add https://github.com/janw4ld/gitops-golang_mysql.git \
       --username <your-github-username> \
       --password <your-personal-access-token>
-    Repository 'https://github.com/janw4ld/go-serve' added
+    Repository 'https://github.com/janw4ld/gitops-golang_mysql' added
     ```
 
 #### Creating sealed secrets for the application
@@ -362,7 +362,7 @@ k8s-ish way of waiting for readiness.
     controller.
 
     Since this is an on-premise demo with no DNS, we can either add the hostname
-    to `/etc/hosts` by running `echo go-server.local | sudo tee -a /etc/hosts`
+    to `/etc/hosts` by running `echo '192.168.1.241 go-server.local' | sudo tee -a /etc/hosts`
     or send our requests to the ingress controller at `192.168.1.241` with the
     `Host` header set to `go-server.local`
 
