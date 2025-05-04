@@ -16,7 +16,6 @@ func init() {
 		Passwd:               os.Getenv("MYSQL_PASS"),
 		Net:                  "tcp",
 		Addr:                 fmt.Sprintf("%s:%s", os.Getenv("MYSQL_HOST"), os.Getenv("MYSQL_PORT")),
-		AllowNativePasswords: true,
 		ParseTime:            true,
 	}
 
