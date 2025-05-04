@@ -16,6 +16,7 @@
           openssl
           kubeseal
           curl
+          jq
           # podman podman-compose
         ];
 
