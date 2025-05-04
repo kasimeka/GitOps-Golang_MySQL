@@ -125,7 +125,7 @@ your shell before running `docker-compose up`.
     MYSQL_PASS=strongandcomplicatedpassword
     MYSQL_PORT=9739
     # the root password is randomized, to set it manually remove
-    # 'MYSQL_RANDOM_ROOT_PASSWORD: "yes"' from `docker-compose.yml`
+    # 'MYSQL_RANDOM_ROOT_PASSWORD: "yes"' from \`docker-compose.yml\`
     EOF
     ```
 
