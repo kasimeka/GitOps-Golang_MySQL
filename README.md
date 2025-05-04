@@ -65,19 +65,11 @@ Kubernetes v1.27.2 and your mileage may vary running it with older versions.
 
 #### In-cluster prerequisites
 
-- A load balancer, on cloud platforms load balancers are usually provided by
-    default but on bare metal clusters you need to install one. I used
-    [MetalLB](https://metallb.universe.tf/) for this project.
+- A load balancer, on cloud platforms load balancers are usually provided by default but on bare metal clusters you need to install one. I used [MetalLB](https://metallb.universe.tf/) for this project.
 - [argocd](https://argo-cd.readthedocs.io/en/stable/)
-- [SealedSecrets](https://artifacthub.io/packages/helm/bitnami-labs/sealed-secrets/2.9.0?modal=install)
-    : to create k8s Secrets in a way that's safe to commit to git. Another
-    option was Mozilla SOPS, which integrates with key management servers but
-    we're going with SealedSecrets because SOPS is overkill for this project.
-- [metrics-server](https://artifacthub.io/packages/helm/metrics-server/metrics-server/3.10.0?modal=install)
-    : to enable Horizontal Pod Autoscaling.
-- [haproxy-ingress](https://artifacthub.io/packages/helm/haproxy-ingress/haproxy-ingress/0.14.3?modal=install)
-    : a high performance ingress controller to expose the application
-    externally using the load balancer.
+- [SealedSecrets](https://artifacthub.io/packages/helm/bitnami-labs/sealed-secrets/2.9.0?modal=install): to create k8s Secrets in a way that's safe to commit to git. Another option was Mozilla SOPS, which integrates with key management servers but we're going with SealedSecrets because SOPS is overkill for this project.
+- [metrics-server](https://artifacthub.io/packages/helm/metrics-server/metrics-server/3.10.0?modal=install): to enable Horizontal Pod Autoscaling.
+- [haproxy-ingress](https://artifacthub.io/packages/helm/haproxy-ingress/haproxy-ingress/0.14.3?modal=install): a high performance ingress controller to expose the application externally using the load balancer.
 
 #### On client prerequisites
 
@@ -118,71 +110,71 @@ your shell before running `docker-compose up`.
 
 - Create `.env` file, replacing the values in the example with your own
 
-    ```console
-    $ cat <<EOF >.env
-    MYSQL_HOST=mysql
-    MYSQL_USER=go-server
-    MYSQL_PASS=strongandcomplicatedpassword
-    MYSQL_PORT=9739
-    # the root password is randomized, to set it manually remove
-    # 'MYSQL_RANDOM_ROOT_PASSWORD: "yes"' from \`docker-compose.yml\`
-    EOF
-    ```
+  ```console
+  $ cat <<EOF >.env
+  MYSQL_HOST=mysql
+  MYSQL_USER=go-server
+  MYSQL_PASS=strongandcomplicatedpassword
+  MYSQL_PORT=9739
+  # the root password is randomized, to set it manually remove
+  # 'MYSQL_RANDOM_ROOT_PASSWORD: "yes"' from \`docker-compose.yml\`
+  EOF
+  ```
 
 - Run the compose file and wait for the database to initialize
 
-    ```console
-    $ docker-compose up -d \
-    > && sleep 30 && docker container ls # delay for db creation
-    Building server
-    [+] Building 0.7s (13/13) FINISHED
-    ...
-    WARNING: Image for service server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
-    Starting go-serve_database_1 ... done
-    Starting go-serve_server_1   ... done
-    CONTAINER ID   IMAGE             COMMAND                  CREATED          STATUS          PORTS                                       NAMES
-    4df38cde1cb8   go-serve_server   "./internship-2023"      30 seconds ago   Up 15 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   go-serve_server_1
-    f4aa24e83b47   mysql:8.0         "docker-entrypoint.s…"   30 seconds ago   Up 30 seconds   3306/tcp, 33060/tcp                         go-serve_database_1
-    ```
+  ```console
+  $ docker-compose up -d \
+  > && sleep 30 && docker container ls # delay for db creation
+  Building server
+  [+] Building 0.7s (13/13) FINISHED
+  ...
+  WARNING: Image for service server was built because it did not already exist. To rebuild this image you must use `docker-compose build` or `docker-compose up --build`.
+  Starting go-serve_database_1 ... done
+  Starting go-serve_server_1   ... done
+  CONTAINER ID   IMAGE       COMMAND          CREATED      STATUS      PORTS                     NAMES
+  4df38cde1cb8   go-serve_server   "./internship-2023"    30 seconds ago   Up 15 seconds   0.0.0.0:9090->9090/tcp, :::9090->9090/tcp   go-serve_server_1
+  f4aa24e83b47   mysql:8.0     "docker-entrypoint.s…"   30 seconds ago   Up 30 seconds   3306/tcp, 33060/tcp             go-serve_database_1
+  ```
 
 - Test the application
 
-    ```console
-    $ curl localhost:9090/healthcheck
-    {"status":"ok"}
-    ```
+  ```console
+  $ curl localhost:9090/healthcheck
+  {"status":"ok"}
+  ```
 
 #### Docker compose tl;dr
 
 - Starting the application
 
-    ```shell
-    docker-compose start
-    ```
+  ```shell
+  docker-compose start
+  ```
 
 - Stopping the application
 
-    ```shell
-    docker-compose stop
-    ```
+  ```shell
+  docker-compose stop
+  ```
 
 - Removing the application
 
-    ```shell
-    docker-compose down
-    ```
+  ```shell
+  docker-compose down
+  ```
 
 - Removing the application and its volumes
 
-    ```shell
-    docker-compose down -v
-    ```
+  ```shell
+  docker-compose down -v
+  ```
 
 - Running a command in the application container
 
-    ```shell
-    docker-compose exec server <command>
-    ```
+  ```shell
+  docker-compose exec server <command>
+  ```
 
 ### Jenkins (CI) pipeline
 
@@ -243,12 +235,12 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
 
 - Add the repo to the argocd cli
 
-    ```console
-    $ argocd repo add https://github.com/janw4ld/gitops-golang_mysql.git \
-      --username <your-github-username> \
-      --password <your-personal-access-token>
-    Repository 'https://github.com/janw4ld/gitops-golang_mysql' added
-    ```
+  ```console
+  $ argocd repo add https://github.com/janw4ld/gitops-golang_mysql.git \
+    --username <your-github-username> \
+    --password <your-personal-access-token>
+  Repository 'https://github.com/janw4ld/gitops-golang_mysql' added
+  ```
 
 #### Creating sealed secrets for the application
 
@@ -265,53 +257,53 @@ successfully to other clusters. For more information see
   changing "default" to the namespace you're deploying to and "db-secret" to the
   value of `.Values.dbSecretName` if it was overridden.
 
-    ```bash
-    new_sealed_value() {
-    openssl rand -base64 24 | head -c 32 \
-    | kubeseal --raw --name db-secret \
-        -n default # change default to the namespace you're deploying to
-    } # random 32 character alphanumeric passwords with 205 bits of entropy
-    cat <<EOF
-    sealed:
-      MYSQL_PASS: $(new_sealed_value)
-      MYSQL_ROOT_PASSWORD: $(new_sealed_value)
-      MYSQL_REPLICATION_PASSWORD: $(new_sealed_value)
-    EOF
-    ```
+  ```bash
+  new_sealed_value() {
+  openssl rand -base64 24 | head -c 32 \
+  | kubeseal --raw --name db-secret \
+      -n default # change default to the namespace you're deploying to
+  } # random 32 character alphanumeric passwords with 205 bits of entropy
+  cat <<EOF
+  sealed:
+    MYSQL_PASS: $(new_sealed_value)
+    MYSQL_ROOT_PASSWORD: $(new_sealed_value)
+    MYSQL_REPLICATION_PASSWORD: $(new_sealed_value)
+  EOF
+  ```
 
-    output:
+  output:
 
-    ```yaml
-    sealed:
-      MYSQL_PASS: AgDF1IzWqfpzbeX3suUXU8entdd7h0aRWn5jpFMaUvboZhZDaFHR5F0Vt2jQ33Pz1DcAtaf1QnYUeYkSBD786DLgr6MF50IFMN+26oS1kRdTlhZvA2wyG6P1oPyeBMmjsmDTp+VilfBnELq1z2ZAad3pNbffMsIJnwaJs9NC3oy+fDr3vSUvJQmLmABt+Xo9i7pgtv5db6yGC3O0HoMNExAXPOlboCNnflUdJStqCjYM6jhNkTDTwwui1EENQ4cQJ8ycUxZWg3JGdllbLq8p2UwXrQh5ZSWZW+GKp7gTjC+ck8ZEUZIQWvNAVhJTgRNxIyuEUPrgEBvPRV6deChcQ/8328LbBM+Tx0V7Tm9leJv1+IeP6lzEhHvombJO1S25s2643cz2b/HhKEwXDE7INr+BV8KX0kAnahgeL+k29X8IgUvnTI45C/2IAaIS1BV+kau3WzYDoxh5U0IHi8EQ7CzeCrpTzl/gjp+rSWocquVqNFyQk90aLaCqgWFsrqW8N5a80fWj6X6EyyLosQL2vPqZ/C2zzERBS/zWM81eTWlvp38jh2Si4Iw1Abp2QPdLiyAVIYJ5qavN/yZgIkE0pXDYWXrb1A6YODyGtMe78iH5WRmSKsx8a5VJkMoQ+u9emuYTA3gSVZnRGA86hxZTHpn27cDhsTSjJ4KdKxG631C2ClKFd9itXnXp3clgCiQRNd1jVxYUEHsqAm4twcC6EeNjWLkbg3JNTAPDUmlc1aO7
-      MYSQL_ROOT_PASSWORD: AgCjij1oH3rR5Kl74Npp4AzfyBaYyb9Me7auzVRM23NiBSHURAnYcWxpQpiT5eyytVz/MP9+qJIjThHuNA2n6lJFEsl3lAdwD4n/sQBP4ueXuHZzJeVLuBnD7HnttnSi1tjXi2S48Z2ZoowDstE+VHQQruFFEJvKq4fBisNcEKPPjHNED4pUf+aZ03gQRXiU9z1ZLeFG4Ms4xIP5nbDBrXo5YX1A/YhsAQQyvflPchoZxdzFlRRgX9ysIfr4G5SC5SqqkS9IOQyViD29U0r8hZtV1j9GvX6XHaqrgtYJw5hDgb5MJCYZrSQbOpraSYOrZbWfvgCU1dcVEmiJetpCPhdiP2/zOASNhwaXLJeDaMN27G6lzHwlu+OKA0lyWikfVn+Vkue4Zoc1CF3n+JPiiUhU/uBjowNF7WiauIdZbK0Yq4Xj/r47HXvGesqATpdifpvawcQ6CmCA2cgeVWrcM5GXLSUfTzMQlEqEZzXULkZqTa/2dzyAuO8GauVIwLZ5HrPOCoKaWGtJ7yDUh1VKtNb0X+o11Uam4fr0HMhHlW5cKwR/ENYxzxhMfnCQG+7WKFfOjF2CL8ADLt2fMlq+OWJW6FsZoEQeKJonxrVVQh85xPEoTZxgE0tFLPpbwvCRNxTcXgGvSt5zOzcSZUmlKbYGdwzfW/psuBhcpA3470hLX7JFjl0zyMgllxv+mtpLHggpHuPNS/XEB47IjRekKg1AlAmvG15+duK9TVa5AWLg
-      MYSQL_REPLICATION_PASSWORD: AgC9s0Me6rRKrZPcrl10qKpm3h9J7Lfv/SUYWh2iwuEQq4qqWsM19zgez8ih8P5sECr/EjVxiMD9tiatUpxzunPNamTOy9u3siaseecYPn/5s3pgomirB3cBOrNPfysw+je7Hk8VCGyoRWt4Aq0K04BiGHEslfsCHp86TqL38pTRwS93SCdDXl2kmsY7NFbYeQDtt4r0pIHmVQ/5b0agfdVe+zNdX3v0R4accGQ9UAEJFhjdQom7ish3tcevmQp2AnLJicVpo8OiEE2PY3G2IcafhA1EhD2tWsEpC34alydW/1PUFXnpjniC5EnsoxU6+dKuCqFUvFhnVsVGqpXC/1Z6A3puJnJKnf+O7fl69GnCU8UKnYqjt4eqycup7aEGVnxlPPIP+mB54IyCwmeBVlPZQYBzBMsnYa+wMRz8oBBGNsLAPvhRXHCGHvcicVE4sPDtbwOlEdWplId4KsNLL2dsUcSeR7CavSZC7eZH4/UJ55b4y4S7BParF8lP6BpcjVi0jus2e423S2pMumPF/Y2A9VafJ4EHm05A+N1yFNaWg6+G73Xq4oC0mnNwQwSOn6Wtn3g70ry1YRBkV2JaEYA5kDF6GQrE47JtZVRzsM+AER7S0D6nsVf3cFa1jIvt90VdtX9JKELGw05jSJo+7lfyMKPBhuZ78xlJvDDiO7gXBSz3JvUECkXFAXtj/gO1fBnhZddeT9FA/rN2WYlktouPcVkBf48vr1qJli1jd74l
-    ```
+  ```yaml
+  sealed:
+    MYSQL_PASS: AgDF1IzWqfpzbeX3suUXU8entdd7h0aRWn5jpFMaUvboZhZDaFHR5F0Vt2jQ33Pz1DcAtaf1QnYUeYkSBD786DLgr6MF50IFMN+26oS1kRdTlhZvA2wyG6P1oPyeBMmjsmDTp+VilfBnELq1z2ZAad3pNbffMsIJnwaJs9NC3oy+fDr3vSUvJQmLmABt+Xo9i7pgtv5db6yGC3O0HoMNExAXPOlboCNnflUdJStqCjYM6jhNkTDTwwui1EENQ4cQJ8ycUxZWg3JGdllbLq8p2UwXrQh5ZSWZW+GKp7gTjC+ck8ZEUZIQWvNAVhJTgRNxIyuEUPrgEBvPRV6deChcQ/8328LbBM+Tx0V7Tm9leJv1+IeP6lzEhHvombJO1S25s2643cz2b/HhKEwXDE7INr+BV8KX0kAnahgeL+k29X8IgUvnTI45C/2IAaIS1BV+kau3WzYDoxh5U0IHi8EQ7CzeCrpTzl/gjp+rSWocquVqNFyQk90aLaCqgWFsrqW8N5a80fWj6X6EyyLosQL2vPqZ/C2zzERBS/zWM81eTWlvp38jh2Si4Iw1Abp2QPdLiyAVIYJ5qavN/yZgIkE0pXDYWXrb1A6YODyGtMe78iH5WRmSKsx8a5VJkMoQ+u9emuYTA3gSVZnRGA86hxZTHpn27cDhsTSjJ4KdKxG631C2ClKFd9itXnXp3clgCiQRNd1jVxYUEHsqAm4twcC6EeNjWLkbg3JNTAPDUmlc1aO7
+    MYSQL_ROOT_PASSWORD: AgCjij1oH3rR5Kl74Npp4AzfyBaYyb9Me7auzVRM23NiBSHURAnYcWxpQpiT5eyytVz/MP9+qJIjThHuNA2n6lJFEsl3lAdwD4n/sQBP4ueXuHZzJeVLuBnD7HnttnSi1tjXi2S48Z2ZoowDstE+VHQQruFFEJvKq4fBisNcEKPPjHNED4pUf+aZ03gQRXiU9z1ZLeFG4Ms4xIP5nbDBrXo5YX1A/YhsAQQyvflPchoZxdzFlRRgX9ysIfr4G5SC5SqqkS9IOQyViD29U0r8hZtV1j9GvX6XHaqrgtYJw5hDgb5MJCYZrSQbOpraSYOrZbWfvgCU1dcVEmiJetpCPhdiP2/zOASNhwaXLJeDaMN27G6lzHwlu+OKA0lyWikfVn+Vkue4Zoc1CF3n+JPiiUhU/uBjowNF7WiauIdZbK0Yq4Xj/r47HXvGesqATpdifpvawcQ6CmCA2cgeVWrcM5GXLSUfTzMQlEqEZzXULkZqTa/2dzyAuO8GauVIwLZ5HrPOCoKaWGtJ7yDUh1VKtNb0X+o11Uam4fr0HMhHlW5cKwR/ENYxzxhMfnCQG+7WKFfOjF2CL8ADLt2fMlq+OWJW6FsZoEQeKJonxrVVQh85xPEoTZxgE0tFLPpbwvCRNxTcXgGvSt5zOzcSZUmlKbYGdwzfW/psuBhcpA3470hLX7JFjl0zyMgllxv+mtpLHggpHuPNS/XEB47IjRekKg1AlAmvG15+duK9TVa5AWLg
+    MYSQL_REPLICATION_PASSWORD: AgC9s0Me6rRKrZPcrl10qKpm3h9J7Lfv/SUYWh2iwuEQq4qqWsM19zgez8ih8P5sECr/EjVxiMD9tiatUpxzunPNamTOy9u3siaseecYPn/5s3pgomirB3cBOrNPfysw+je7Hk8VCGyoRWt4Aq0K04BiGHEslfsCHp86TqL38pTRwS93SCdDXl2kmsY7NFbYeQDtt4r0pIHmVQ/5b0agfdVe+zNdX3v0R4accGQ9UAEJFhjdQom7ish3tcevmQp2AnLJicVpo8OiEE2PY3G2IcafhA1EhD2tWsEpC34alydW/1PUFXnpjniC5EnsoxU6+dKuCqFUvFhnVsVGqpXC/1Z6A3puJnJKnf+O7fl69GnCU8UKnYqjt4eqycup7aEGVnxlPPIP+mB54IyCwmeBVlPZQYBzBMsnYa+wMRz8oBBGNsLAPvhRXHCGHvcicVE4sPDtbwOlEdWplId4KsNLL2dsUcSeR7CavSZC7eZH4/UJ55b4y4S7BParF8lP6BpcjVi0jus2e423S2pMumPF/Y2A9VafJ4EHm05A+N1yFNaWg6+G73Xq4oC0mnNwQwSOn6Wtn3g70ry1YRBkV2JaEYA5kDF6GQrE47JtZVRzsM+AER7S0D6nsVf3cFa1jIvt90VdtX9JKELGw05jSJo+7lfyMKPBhuZ78xlJvDDiO7gXBSz3JvUECkXFAXtj/gO1fBnhZddeT9FA/rN2WYlktouPcVkBf48vr1qJli1jd74l
+  ```
 
 - replace `.spec.helm.values` in [`application.yml`](./application.yml) by the
 previous script's output and make sure to indent it correctly
 
-    OR:
+  OR:
 
-    you can manually insert your passwords instead of generating them by echoing
-    each password into kubeseal as follows:
+  you can manually insert your passwords instead of generating them by echoing
+  each password into kubeseal as follows:
 
-    ```console
-    $ echo -n strongandcomplicatedpassword \
-    > | kubeseal --raw --name db-secret -n default
-    AgChrx5sEUTnnYlD4VMn4089BF/J4Qbu1egFJp7xL7LJnW7Q9cWQwPhbBqqEncyjB0cFAwb9cHgPzQIWm2WhHuSPbFmIQlLTeCaffyfO3v+2TCYu8OUJHatbOoryeP7DGoMxLm9XaBL8DMqawS1DYDw5kitw/QC82citUt/WMTnuXsDTkSx0pkM5b/1ZFoo9U//gix8d2gsrPHQdIaASx4eVPU0g5dQ+9oVCGfvW6Vv9FAkcIDPUy2T8wfgIDTVGW9l+Z7FX3X21jX+Bu5U5CBmSms5niDCiQTnKy2j6h2bkRXDlnm2/HJUwLVqmGLgYZwY2zRqVCHBhqgLg7pFx+IPjpNLtNMxNlIUIXQegvbeAaMLB+wWUvjBNZURZ0JtPa0zLt0DuHjIiTAgH3+5SPFwtHihclcNMt5kZfRPTn8XFfEcCq3QION9eUG4YeYBEQLYqArvNWhpHixTIm/lTBUyJcWJAUrM2qCwnSgZPAWJHAayQ36kXtBwHBJntipyne2u9c8EZwGlztcEl0UWqB/bWFOiZ+3nZDAkfxY7hZOFvAvQGLINvL5mqL0ruzHEf9nZq0OXwVUKv3Lb8e1XsOMCNCuktW0CN8uNciCB1Ie/90TADZC0h6BZLM1NCk23pSGyiOgSE1oYIjG0c8gfPgrRnQUwuuoUhihXM/rRTH1NuIivFLZOOvVxl+C6gOGYrw7UGtumxcr52fR60DY1MXZVJGxgenPpnoToGM7CQ
-    ```
+  ```console
+  $ echo -n strongandcomplicatedpassword \
+  > | kubeseal --raw --name db-secret -n default
+  AgChrx5sEUTnnYlD4VMn4089BF/J4Qbu1egFJp7xL7LJnW7Q9cWQwPhbBqqEncyjB0cFAwb9cHgPzQIWm2WhHuSPbFmIQlLTeCaffyfO3v+2TCYu8OUJHatbOoryeP7DGoMxLm9XaBL8DMqawS1DYDw5kitw/QC82citUt/WMTnuXsDTkSx0pkM5b/1ZFoo9U//gix8d2gsrPHQdIaASx4eVPU0g5dQ+9oVCGfvW6Vv9FAkcIDPUy2T8wfgIDTVGW9l+Z7FX3X21jX+Bu5U5CBmSms5niDCiQTnKy2j6h2bkRXDlnm2/HJUwLVqmGLgYZwY2zRqVCHBhqgLg7pFx+IPjpNLtNMxNlIUIXQegvbeAaMLB+wWUvjBNZURZ0JtPa0zLt0DuHjIiTAgH3+5SPFwtHihclcNMt5kZfRPTn8XFfEcCq3QION9eUG4YeYBEQLYqArvNWhpHixTIm/lTBUyJcWJAUrM2qCwnSgZPAWJHAayQ36kXtBwHBJntipyne2u9c8EZwGlztcEl0UWqB/bWFOiZ+3nZDAkfxY7hZOFvAvQGLINvL5mqL0ruzHEf9nZq0OXwVUKv3Lb8e1XsOMCNCuktW0CN8uNciCB1Ie/90TADZC0h6BZLM1NCk23pSGyiOgSE1oYIjG0c8gfPgrRnQUwuuoUhihXM/rRTH1NuIivFLZOOvVxl+C6gOGYrw7UGtumxcr52fR60DY1MXZVJGxgenPpnoToGM7CQ
+  ```
 
-    then copying the password into [`application.yml`](./application.yml)`:.spec.helm.values.sealed`
+  then copying the password into [`application.yml`](./application.yml)`:.spec.helm.values.sealed`
 
 #### Deploying the application
 
 - Switch default kubectl namespace to argocd (it's recommended by argocd cli)
 
-    ```console
-    $ kubectl config set-context --current --namespace=argocd
-    Context "kubernetes-admin@kubernetes" modified.
-    ```
+  ```console
+  $ kubectl config set-context --current --namespace=argocd
+  Context "kubernetes-admin@kubernetes" modified.
+  ```
 
 <!--
 - Install chart dependencies
@@ -329,18 +321,18 @@ previous script's output and make sure to indent it correctly
 
 - Apply the application manifest
 
-    ```console
-    $ kubectl apply -f application.yml \
-    > && sleep 120 \
-    > && kubectl -n default get po -l app.kubernetes.io/instance=go-serve
-    NAME                        READY   STATUS    RESTARTS      AGE
-    go-serve-764b749495-dk4vv   1/1     Running   1 (60s ago)   2m
-    go-serve-764b749495-l6k77   1/1     Running   1 (45s ago)   105s
-    go-serve-764b749495-rjq4k   1/1     Running   1 (45s ago)   105s
-    go-serve-db-primary-0       1/1     Running   0             2m
-    go-serve-db-secondary-0     1/1     Running   0             2m
-    go-serve-db-secondary-1     1/1     Running   0             46s
-    ```
+  ```console
+  $ kubectl apply -f application.yml \
+  > && sleep 120 \
+  > && kubectl -n default get po -l app.kubernetes.io/instance=go-serve
+  NAME                        READY   STATUS    RESTARTS      AGE
+  go-serve-764b749495-dk4vv   1/1     Running   1 (60s ago)   2m
+  go-serve-764b749495-l6k77   1/1     Running   1 (45s ago)   105s
+  go-serve-764b749495-rjq4k   1/1     Running   1 (45s ago)   105s
+  go-serve-db-primary-0       1/1     Running   0             2m
+  go-serve-db-secondary-0     1/1     Running   0             2m
+  go-serve-db-secondary-1     1/1     Running   0             46s
+  ```
 
 <sup>
 The restart is okay because the server doesn't wait for the database and
@@ -352,45 +344,45 @@ k8s-ish way of waiting for readiness.
 
 - Get the application's ingress hostname and the ingress controller's IP address
 
-    ```console
-    $ kubectl -n default get ingresses go-serve \
-    > && kubectl -n default get svc ingress-haproxy-ingress
-    NAME       CLASS     HOSTS            ADDRESS   PORTS   AGE
-    go-serve   haproxy   go-serve.local             80      5m
-    NAME                      TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
-    ingress-haproxy-ingress   LoadBalancer   10.109.177.189   192.168.1.241   80:31446/TCP,443:30612/TCP   32h
-    ```
+  ```console
+  $ kubectl -n default get ingresses go-serve \
+  > && kubectl -n default get svc ingress-haproxy-ingress
+  NAME       CLASS     HOSTS            ADDRESS   PORTS   AGE
+  go-serve   haproxy   go-serve.local             80      5m
+  NAME                      TYPE           CLUSTER-IP       EXTERNAL-IP     PORT(S)                      AGE
+  ingress-haproxy-ingress   LoadBalancer   10.109.177.189   192.168.1.241   80:31446/TCP,443:30612/TCP   32h
+  ```
 
-    This means that the application is accessible at `go-server.local/api`, but
-    note that the external IP address `192.168.1.241` is assigned automatically
-    by the cluster's load balancer, and the hostname `go-server.local` is
-    declared in the chart's values and should be overridden in `application.yml`
-    `.spec.helm.values` to match the domain name pointing to our ingress
-    controller.
+  This means that the application is accessible at `go-server.local/api`, but
+  note that the external IP address `192.168.1.241` is assigned automatically
+  by the cluster's load balancer, and the hostname `go-server.local` is
+  declared in the chart's values and should be overridden in `application.yml`
+  `.spec.helm.values` to match the domain name pointing to our ingress
+  controller.
 
-    Since this is an on-premise demo with no DNS, we can either add the hostname
-    to `/etc/hosts` by running `echo '192.168.1.241 go-server.local' | sudo tee -a /etc/hosts`
-    or send our requests to the ingress controller at `192.168.1.241` with the
-    `Host` header set to `go-server.local`
+  Since this is an on-premise demo with no DNS, we can either add the hostname
+  to `/etc/hosts` by running `echo '192.168.1.241 go-server.local' | sudo tee -a /etc/hosts`
+  or send our requests to the ingress controller at `192.168.1.241` with the
+  `Host` header set to `go-server.local`
 
 - Send requests to the application
 
-    <sup>
-    note that the /healthcheck endpoint is not exposed outside of the cluster in
-    the chart's default ingress config, but this can be overridden in
-    application.yml too
-    </sup>
+  <sup>
+  note that the /healthcheck endpoint is not exposed outside of the cluster in
+  the chart's default ingress config, but this can be overridden in
+  application.yml too
+  </sup>
 
-    ```console
-    $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
-    null
-    $ curl -X POST -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
-    OK
-    $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
-    [{"createdAt":"2023-06-13T15:35:53Z","id":1}]
-    ```
+  ```console
+  $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
+  null
+  $ curl -X POST -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
+  OK
+  $ curl -w '\n' -H 'Host: go-serve.local' 192.168.1.241/api
+  [{"createdAt":"2023-06-13T15:35:53Z","id":1}]
+  ```
 
-    [screenshot](./README.d/app-screenshot.png)
+  [screenshot](./README.d/app-screenshot.png)
 
 ## Further reading
 
