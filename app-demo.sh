@@ -17,8 +17,9 @@ curl -sH "Host: $DOMAIN" $IP/api | jq .
 echo -e "\nwaiting for 2 seconds..."
 sleep 2
 
-echo -ne "patching record with id=2: "
+echo -ne "patching the record whose id=2: "
 curl -sH "Host: $DOMAIN" -X PATCH $IP/api?id=2 -w '\n'
 
 echo "records after patching:"
 curl -sH "Host: $DOMAIN" $IP/api | jq .
+echo "notice that this record has a newer timestamp than the others :)"
