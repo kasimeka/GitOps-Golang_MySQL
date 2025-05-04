@@ -1,3 +1,4 @@
+<!-- markdownlint-disable line-length no-inline-html -->
 # go-serve GitOps Deployment
 
 > [!NOTE]
@@ -6,32 +7,33 @@
 ## Table of contents
 
 - [go-serve GitOps Deployment](#go-serve-gitops-deployment)
-    - [Table of contents](#table-of-contents)
-    - [Challenge rubric](#challenge-rubric)
-        - [Main criteria](#main-criteria)
-        - [Bonus criteria](#bonus-criteria)
-        - [Application screenshot](#application-screenshot)
-    - [Deployment instructions](#deployment-instructions)
-        - [Prerequisites](#prerequisites)
-            - [In-cluster prerequisites](#in-cluster-prerequisites)
-            - [On client prerequisites](#on-client-prerequisites)
-            - [Machine independent prerequisites](#machine-independent-prerequisites)
-        - [docker-compose.yml usage](#docker-composeyml-usage)
-            - [Initializing the project](#initializing-the-project)
-            - [Docker compose tl;dr](#docker-compose-tldr)
-        - [Jenkins (CI) pipeline](#jenkins-ci-pipeline)
-            - [Prerequisite Jenkins plugins](#prerequisite-jenkins-plugins)
-            - [Pipeline configuration](#pipeline-configuration)
-        - [ArgoCD application deployment](#argocd-application-deployment)
-            - [Adding the repo to argocd](#adding-the-repo-to-argocd)
-            - [Creating sealed secrets for the application](#creating-sealed-secrets-for-the-application)
-            - [Deploying the application](#deploying-the-application)
-            - [Accessing the application](#accessing-the-application)
-    - [Further reading](#further-reading)
+  - [Table of contents](#table-of-contents)
+  - [Challenge rubric](#challenge-rubric)
+    - [Main criteria](#main-criteria)
+    - [Bonus criteria](#bonus-criteria)
+    - [Application screenshot](#application-screenshot)
+  - [Deployment instructions](#deployment-instructions)
+    - [Prerequisites](#prerequisites)
+      - [In-cluster prerequisites](#in-cluster-prerequisites)
+      - [On client prerequisites](#on-client-prerequisites)
+      - [Machine independent prerequisites](#machine-independent-prerequisites)
+    - [docker-compose.yml usage](#docker-composeyml-usage)
+      - [Initializing the project](#initializing-the-project)
+      - [Docker compose tl;dr](#docker-compose-tldr)
+    - [Jenkins (CI) pipeline](#jenkins-ci-pipeline)
+      - [Prerequisite Jenkins plugins](#prerequisite-jenkins-plugins)
+      - [Pipeline configuration](#pipeline-configuration)
+    - [ArgoCD application deployment](#argocd-application-deployment)
+      - [Adding the repo to argocd](#adding-the-repo-to-argocd)
+      - [Creating sealed secrets for the application](#creating-sealed-secrets-for-the-application)
+      - [Deploying the application](#deploying-the-application)
+      - [Accessing the application](#accessing-the-application)
+  - [Further reading](#further-reading)
 
 ## Challenge rubric
 
 ### Main criteria
+
 | criterion | completed | artifacts |
 |---|---|---|
 | Dockerfile that build the app and try to make it as lightweight as you can. | yes | [Dockerfile](./Dockerfile) |
@@ -40,7 +42,9 @@
 | Helm manifests for kubernetes to deploy the app using them on kubernetes with adding config to support high availability and volume persistence and exposing service to the public (you can use minikube to test). | yes | [chart](./chart) |
 
 ---
+
 ### Bonus criteria
+
 | criterion | completed | artifacts |
 |---|---|---|
 | Add autoscaling manifest for number of replicas. | yes | [hpa.yaml](./chart/templates/hpa.yaml), [cluster screenshot](./README.d/cluster-screenshot.png) |
@@ -198,12 +202,12 @@ The Jenkins pipeline is configured to run on every push to the `main` branch and
 #### Prerequisite Jenkins plugins
 
 - Jenkins' built-in plugins:
-    - Github Plugin
-    - Github API Plugin
-    - Pipeline
-    - Pipeline: GitHub Groovy Libraries
+  - Github Plugin
+  - Github API Plugin
+  - Pipeline
+  - Pipeline: GitHub Groovy Libraries
 - Third-party plugins:
-    - [Slack Notification Plugin](https://plugins.jenkins.io/slack/)
+  - [Slack Notification Plugin](https://plugins.jenkins.io/slack/)
 
 #### Pipeline configuration
 
