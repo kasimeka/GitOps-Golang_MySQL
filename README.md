@@ -1,5 +1,8 @@
 # go-serve GitOps Deployment
 
+> [!NOTE]
+> issues and contributions to the repo are welcome :)
+
 ## Table of contents
 
 - [go-serve GitOps Deployment](#go-serve-gitops-deployment)
