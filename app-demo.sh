@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # replace DOMAIN and IP with your own values from the ingress and service
 DOMAIN="go-serve.local"
