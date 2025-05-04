@@ -2,6 +2,10 @@ services:
   server:
     build:
       context: .
+    develop:
+      watch:
+      - action: rebuild
+        path: ./src
     restart: unless-stopped
     ports:
       - 9090:9090
